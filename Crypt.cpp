@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <bitset>
 #include <fstream>
 #include <string>
@@ -70,15 +70,21 @@ void Crypter::Encrypt() {
             oneTimePushBack += element;
         }
         else if (element != QUESTION_MARK && element == END_LINE) {
-            newContent += END_LINE;
+            newContent += END_LINE; // BUG
         }
         else if (element == QUESTION_MARK && element != END_LINE) {
             splittedContent.push_back(oneTimePushBack);
             oneTimePushBack = "";
         }
     }
+    int binaryBitSize = 0;
     for (auto it = splittedContent.begin(); it != splittedContent.end(); ++it) {
-        newContent += *it;    std::cout << *it << std::endl;
+        for (auto binaryBit : *it) {
+            auto a = (int)binaryBit * pow(2, binaryBitSize);
+            std::cout << a << std::endl;
+            binaryBitSize++;
+        }
+        binaryBitSize = 0;
     }
     FILE_IO decryptFile("e." + m_fileName);
     decryptFile.SetContent(newContent);
