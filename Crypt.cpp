@@ -5,6 +5,7 @@
 #include <format>
 #include <vector>
 #include <math.h>
+#include <conio.h>
 
 #define WHITE_SPACE ' '
 #define END_LINE '\n'
@@ -102,7 +103,7 @@ void Crypter::Encrypt() {
         int hexadecimalNumber = 0;
         for (auto binaryBit : *it) {
             int m_binaryBit = (int)binaryBit;
-            std::cout << m_binaryBit << std::endl;
+            //std::cout << m_binaryBit << std::endl;
             double bitHexadecimalNumber = .0;
             if (m_binaryBit == DECIMAL_ZERO) {
                 bitHexadecimalNumber = pow(2, binaryBitSize) * 0;
@@ -110,21 +111,21 @@ void Crypter::Encrypt() {
             else if (m_binaryBit == DECIMAL_ONE) {
                 bitHexadecimalNumber = pow(2, binaryBitSize) * 1;
             }
-            std::cout << binaryBit << " 2^" << binaryBitSize << std::endl;
-            std::cout << "B: " << bitHexadecimalNumber << std::endl;
+            //std::cout << binaryBit << " 2^" << binaryBitSize << std::endl;
+            //std::cout << "B: " << bitHexadecimalNumber << std::endl;
             hexadecimalNumber += bitHexadecimalNumber;
             binaryBitSize++;
         }
-        std::cout << hexadecimalNumber << std::endl;
+        //std::cout << hexadecimalNumber << std::endl;
         hexadecimalNumbers.push_back(hexadecimalNumber);
         hexadecimalNumber = 0;
         binaryBitSize = 0;
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
     chars.reserve(hexadecimalNumbers.size());
     for (auto hex = hexadecimalNumbers.begin(); hex != hexadecimalNumbers.end(); hex++) {
         chars.push_back(*hex);
-        std::cout << *hex << std::endl;
+        //std::cout << *hex << std::endl;
     }
     for (auto& n : chars) {
         newContent += n;
@@ -133,12 +134,62 @@ void Crypter::Encrypt() {
     decryptFile.SetContent(newContent);
 }
 
-int main() // TODO: have to ARGVS
+#define RIGH_ARROW_KEY_ASCII 77
+#define LEFT_ARROW_KEY_ASCII 75
+#define ENTER_KEY_ASCII 13
+#define ESCAPE_KEY_ASCII 27
+
+#define ENCRYPT_MODE 0
+#define DECRYPT_MODE 1
+
+#define SELECTED_ENCRYPT_MODE "_1: Encrypt Mode_"
+#define UNSELECTED_ENCRYPT_MODE " 1: Encrypt Mode"
+
+#define SELECTED_DECRYPT_MODE "_2: Decrypt Mode_"
+#define UNSELECTED_DECRYPT_MODE " 2: Decrypt Mode"
+
+int main(int argc, char** argv) // TODO: have to ARGVS
 {
-    /*
-        1: Encrypt Mode
-        2: Decrypt Mode
-    */
-    Crypter crypt("d.testFile.txt");
-    crypt.Encrypt();
+    std::string fileName;
+    fileName = (std::string)argv[1];
+    Crypter crypter(fileName);
+    char key_press;
+    int ascii_value;
+    int mode;
+    mode = ENCRYPT_MODE;
+    std::cout << "\t\t" << SELECTED_ENCRYPT_MODE << "\t" << UNSELECTED_DECRYPT_MODE << "\r";
+    //std::cout << "\r\t\t\t" << SELECTED_ENCRYPT_MODE << "\n\t\t\t" << UNSELECTED_DECRYPT_MODE << "\r";
+    while (1)
+    {
+        key_press = _getch();
+        ascii_value = key_press;
+        if (ascii_value == ESCAPE_KEY_ASCII)
+            break;
+        else if (ascii_value == RIGH_ARROW_KEY_ASCII) {
+            mode = ENCRYPT_MODE;
+        }
+        else if (ascii_value == LEFT_ARROW_KEY_ASCII) {
+            mode = DECRYPT_MODE;
+        }
+        else if (ascii_value == ENTER_KEY_ASCII) {
+            break;
+        }
+
+        if (mode == ENCRYPT_MODE) {
+            //std::cout << "\r\t\t\t" << SELECTED_ENCRYPT_MODE << "\r\n\t\t\t" << UNSELECTED_DECRYPT_MODE;
+            std::cout << "\t\t" << SELECTED_ENCRYPT_MODE << "\t" << UNSELECTED_DECRYPT_MODE << "\r";
+        }
+        else if (mode == DECRYPT_MODE) {
+            //std::cout << "\r\t\t\t" << UNSELECTED_ENCRYPT_MODE << "\r\n\t\t\t" << SELECTED_DECRYPT_MODE << "\r";
+            std::cout << "\t\t" << SELECTED_DECRYPT_MODE << "\t" << UNSELECTED_ENCRYPT_MODE << "\r";
+        }
+    }
+    if (mode == ENCRYPT_MODE) {
+        crypter.Encrypt();
+    }
+    else if (mode == DECRYPT_MODE) {
+        crypter.Decrypt();
+    }
+
+    return EXIT_SUCCESS;
 }
