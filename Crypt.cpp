@@ -4,10 +4,27 @@
 #include <string>
 #include <format>
 #include <vector>
+#include <math.h>
 
 #define WHITE_SPACE ' '
 #define END_LINE '\n'
 #define QUESTION_MARK '?'
+
+#define DECIMAL_ZERO 48
+#define DECIMAL_ONE 49
+
+void reverseStr(std::string& str)
+{
+    int len = str.length();
+    int n = len - 1;
+    int i = 0;
+    while (i <= n) {
+        std::swap(str[i], str[n]);
+        n = n - 1;
+        i = i + 1;
+    }
+
+}
 
 class FILE_IO {
 public:
@@ -73,18 +90,44 @@ void Crypter::Encrypt() {
             newContent += END_LINE; // BUG
         }
         else if (element == QUESTION_MARK && element != END_LINE) {
+            reverseStr(oneTimePushBack);
             splittedContent.push_back(oneTimePushBack);
             oneTimePushBack = "";
         }
     }
     int binaryBitSize = 0;
+    std::vector<int> hexadecimalNumbers;
+    std::vector<char> chars;
     for (auto it = splittedContent.begin(); it != splittedContent.end(); ++it) {
+        int hexadecimalNumber = 0;
         for (auto binaryBit : *it) {
-            auto a = (int)binaryBit * pow(2, binaryBitSize);
-            std::cout << a << std::endl;
+            int m_binaryBit = (int)binaryBit;
+            std::cout << m_binaryBit << std::endl;
+            double bitHexadecimalNumber = .0;
+            if (m_binaryBit == DECIMAL_ZERO) {
+                bitHexadecimalNumber = pow(2, binaryBitSize) * 0;
+            }
+            else if (m_binaryBit == DECIMAL_ONE) {
+                bitHexadecimalNumber = pow(2, binaryBitSize) * 1;
+            }
+            std::cout << binaryBit << " 2^" << binaryBitSize << std::endl;
+            std::cout << "B: " << bitHexadecimalNumber << std::endl;
+            hexadecimalNumber += bitHexadecimalNumber;
             binaryBitSize++;
         }
+        std::cout << hexadecimalNumber << std::endl;
+        hexadecimalNumbers.push_back(hexadecimalNumber);
+        hexadecimalNumber = 0;
         binaryBitSize = 0;
+    }
+    std::cout << std::endl;
+    chars.reserve(hexadecimalNumbers.size());
+    for (auto hex = hexadecimalNumbers.begin(); hex != hexadecimalNumbers.end(); hex++) {
+        chars.push_back(*hex);
+        std::cout << *hex << std::endl;
+    }
+    for (auto& n : chars) {
+        newContent += n;
     }
     FILE_IO decryptFile("e." + m_fileName);
     decryptFile.SetContent(newContent);
