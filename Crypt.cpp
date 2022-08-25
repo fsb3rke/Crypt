@@ -1,3 +1,5 @@
+// AUTHOR: fsb3rke
+
 #include <iostream>
 #include <bitset>
 #include <fstream>
